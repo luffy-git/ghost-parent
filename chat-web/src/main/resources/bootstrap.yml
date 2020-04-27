@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: chat-web
+
+---
+eureka: #  eureka 基本信息配置
+  client:
+    register-with-eureka: true    # 将当前实例注册到 eureka 默认不配置也可以,当打开了 eureka 配置,自动装载的时候,该值默认是true
+    region: cn
+    availability-zones:
+      cn: huanan1,huanan2,huanan3 # 华南1区  华南2区  华南3区
+    service-url:
+      huanan1: http://ghost-eureka-huanan1:tB6NKKgb1DajMOJt@huanan1.com:21509/eureka/
+      huanan2: http://ghost-eureka-huanan2:mZe8xicKMRqZmTMD@huanan2.com:21510/eureka/
+      huanan3: http://ghost-eureka-huanan3:0pXWNzp9dsSWGtiY@huanan3.com:21511/eureka/
+  instance:
+    prefer-ip-address: false      # 把 ip 注册到服务中心
+    instance-id: ${eureka.instance.hostname}:${server.port}
+
+---
+spring:
+  profiles: chat-web-huanan1
+server:
+ port: 20598
+eureka:
+  instance:
+    hostname: huanan1.com
+
+---
+spring:
+  profiles: chat-web-huanan2
+server:
+  port: 20599
+eureka:
+  instance:
+    hostname: huanan2.com

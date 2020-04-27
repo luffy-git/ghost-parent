@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.5.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>com.ghost</groupId>
+    <artifactId>ghost-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>ghost-parent</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <spring-cloud.version>Hoxton.SR3</spring-cloud.version>
+        <fastjson.version>1.2.67</fastjson.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <!-- 注册中心服务模块 -->
+        <module>eureka-server</module>
+        <!-- 配置中心服务模块 -->
+        <module>config-server</module>
+        <!-- 聊天室系统业务服务模块 -->
+        <module>chat-service</module>
+        <!-- 支付系统业务服务模块 -->
+        <module>pay-service</module>
+        <!-- 聊天室系统 web 服务模块 -->
+        <module>chat-web</module>
+        <!-- 聊天室系统 网关模块 -->
+        <module>chat-gateway</module>
+    </modules>
+
+    <!-- 根据不同环境打包插件 -->
+    <profiles>
+        <profile>
+            <id>loc</id>
+            <properties>
+                <env>loc</env>
+            </properties>
+            <activation>
+                <!-- 默认环境 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <env>test</env>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <env>dev</env>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <env>prod</env>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <!-- 拷贝资源文件 -->
+        <resources>
+            <!-- 根据运行环境打包 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>bootstrap.yml</include>
+                    <include>application.yml</include>
+                    <include>application-${env}.yml</include>
+                    <include>banner.txt</include>
+                    <include>logback-spring.xml</include>
+                </includes>
+                <!-- 转移符号过滤替换 -->
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- 资源编译插件,覆盖默认的$符号为@符号 -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
+            <!-- git 配置属性插件 -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>true</verbose>
+                    <dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <!--<excludeProperties>
+                        <excludeProperty>git.remote.origin.url</excludeProperty>
+                        <excludeProperty>git.commit.*</excludeProperty>
+                        <excludeProperty>git.build.user.*</excludeProperty>
+                    </excludeProperties>-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

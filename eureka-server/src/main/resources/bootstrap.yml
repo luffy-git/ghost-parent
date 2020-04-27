@@ -1,0 +1,111 @@
+spring:
+  application:
+    name: eureka-server           # 服务名称
+management:
+  info:
+    git:
+      mode: full                  # 展示所有 git 分支信息
+  endpoint:
+    shutdown:
+      enabled: false              # 禁用 shutdown 端点
+  endpoints:
+    web:
+     exposure:
+      include: "*"                # 暴露所有端点 默认是info,health,可以整合所有端点对应用健康做监控,为了演示展示所有.
+
+# 下列配置为了方便测试 注册中心集群 线上服务器运行,需要配置域名
+---
+spring:
+  profiles: server-huanan1
+  security:
+    user:
+      name: ghost-eureka-huanan1  # 配置BASIC认证登录的账号
+      password: tB6NKKgb1DajMOJt  # 配置BASIC认证登录的密码
+server:
+  port: 21509
+eureka:
+  client:
+    prefer-same-zone-eureka: true # 是否尝试按照定义的 zones 列表优先级注册
+    register-with-eureka: true    # 因为自己是为注册中心，不需要自己注册自己,集群模式下需要改为true
+    fetch-registry: true          # 因为自己是为注册中心，不需要检索服务
+    region: cn
+    availability-zones:
+      cn: huanan1,huanan2,huanan3 # 华南1区  华南2区  华南3区
+    service-url:
+      huanan1: http://ghost-eureka-huanan1:tB6NKKgb1DajMOJt@huanan1.com:21509/eureka/
+      huanan2: http://ghost-eureka-huanan2:mZe8xicKMRqZmTMD@huanan2.com:21510/eureka/
+      huanan3: http://ghost-eureka-huanan3:0pXWNzp9dsSWGtiY@huanan3.com:21511/eureka/
+  instance:
+    hostname: huanan1.com  # 注册到eureka 的主机名
+    prefer-ip-address: false             
+    instance-id: ${eureka.instance.hostname}:${server.port}
+    metadata-map:
+      zone: huanan1
+  server:
+    renewal-percent-threshold: 0.5       # 阈值因子，默认是0.85，如果阈值比最小值大，则自我保护模式开启
+    peer-node-connect-timeout-ms: 3000   # 连接对等节点服务器复制的超时的时间，单位为毫秒，默认为200
+    peer-node-read-timeout-ms: 3000      # 读取对等节点服务器复制的超时的时间，单位为毫秒，默认为200
+
+---
+spring:
+  profiles: server-huanan2
+  security:
+    user:
+      name: ghost-eureka-huanan2   # 配置BASIC认证登录的账号
+      password: mZe8xicKMRqZmTMD   # 配置BASIC认证登录的密码
+server:
+  port: 21510
+eureka:
+  client:
+    prefer-same-zone-eureka: true  # 是否尝试按照定义的 zones 列表优先级注册
+    register-with-eureka: true     # 因为自己是为注册中心，不需要自己注册自己,集群模式下需要改为true
+    fetch-registry: true           # 因为自己是为注册中心，不需要检索服务
+    region: cn
+    availability-zones:
+      cn: huanan1,huanan2,huanan3  # 华南1区  华南2区  华南3区
+    service-url:
+      huanan1: http://ghost-eureka-huanan1:tB6NKKgb1DajMOJt@huanan1.com:21509/eureka/
+      huanan2: http://ghost-eureka-huanan2:mZe8xicKMRqZmTMD@huanan2.com:21510/eureka/
+      huanan3: http://ghost-eureka-huanan3:0pXWNzp9dsSWGtiY@huanan3.com:21511/eureka/
+  instance:
+    hostname: huanan2.com          # 注册到eureka 的主机名
+    prefer-ip-address: false             
+    instance-id: ${eureka.instance.hostname}:${server.port}
+    metadata-map:
+      zone: huanan2
+  server:
+    renewal-percent-threshold: 0.5       # 阈值因子，默认是0.85，如果阈值比最小值大，则自我保护模式开启
+    peer-node-connect-timeout-ms: 3000   # 连接对等节点服务器复制的超时的时间，单位为毫秒，默认为200
+    peer-node-read-timeout-ms: 3000      # 读取对等节点服务器复制的超时的时间，单位为毫秒，默认为200
+
+---
+spring:
+  profiles: server-huanan3
+  security:
+    user:
+      name: ghost-eureka-huanan3  # 配置BASIC认证登录的账号
+      password: 0pXWNzp9dsSWGtiY   # 配置BASIC认证登录的密码
+server:
+  port: 21511
+eureka:
+  client:
+    prefer-same-zone-eureka: true  # 是否尝试按照定义的 zones 列表优先级注册
+    register-with-eureka: true     # 因为自己是为注册中心，不需要自己注册自己,集群模式下需要改为true
+    fetch-registry: true           # 因为自己是为注册中心，不需要检索服务
+    region: cn
+    availability-zones:
+      cn: huanan1,huanan2,huanan3  # 华南1区  华南2区  华南3区
+    service-url:
+      huanan1: http://ghost-eureka-huanan1:tB6NKKgb1DajMOJt@huanan1.com:21509/eureka/
+      huanan2: http://ghost-eureka-huanan2:mZe8xicKMRqZmTMD@huanan2.com:21510/eureka/
+      huanan3: http://ghost-eureka-huanan3:0pXWNzp9dsSWGtiY@huanan3.com:21511/eureka/
+  instance:
+    hostname: huanan3.com  # 注册到eureka 的主机名
+    prefer-ip-address: false             
+    instance-id: ${eureka.instance.hostname}:${server.port}
+    metadata-map:
+      zone: huanan3
+  server:
+    renewal-percent-threshold: 0.5       # 阈值因子，默认是0.85，如果阈值比最小值大，则自我保护模式开启
+    peer-node-connect-timeout-ms: 3000   # 连接对等节点服务器复制的超时的时间，单位为毫秒，默认为200
+    peer-node-read-timeout-ms: 3000      # 读取对等节点服务器复制的超时的时间，单位为毫秒，默认为200

@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: gitee-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://gitee.com/code_luffy/ghost-config.git # gitee 配置仓库地址
+          username:
+          password:
+          search-paths:           # 如果git项目中没有二级文件夹,则将引入全部配置文件,有文件夹则需添加文件夹路径
+           - chat
+           - order
+          default-label: master   # 默认读取配置文件分支名称
+
+eureka: #  eureka 基本信息配置
+  client:
+    register-with-eureka: true    # 将当前实例注册到 eureka 默认不配置也可以,当打开了 eureka 配置,自动装载的时候,该值默认是true
+    region: cn
+    availability-zones:
+      cn: huanan1,huanan2,huanan3 # 华南1区  华南2区  华南3区
+    service-url:
+      huanan1: http://ghost-eureka-huanan1:tB6NKKgb1DajMOJt@huanan1.com:21509/eureka/
+      huanan2: http://ghost-eureka-huanan2:mZe8xicKMRqZmTMD@huanan2.com:21510/eureka/
+      huanan3: http://ghost-eureka-huanan3:0pXWNzp9dsSWGtiY@huanan3.com:21511/eureka/
+  instance:
+    prefer-ip-address: false      # 把 ip 注册到服务中心
+    instance-id: ${eureka.instance.hostname}:${server.port}
+
+
+encrypt:
+  key: 'RLo%Fwr^7K@A5nzpIpC7vomb#IzVYU'
+
+---
+spring:
+  profiles: server-huanan1
+server:
+ port: 42952
+eureka:
+  instance:
+    hostname: huanan1.com
+
+---
+spring:
+  profiles: server-huanan2
+server:
+  port: 42953
+eureka:
+  instance:
+    hostname: huanan2.com
+
+---
+spring:
+  profiles: server-huanan3
+server:
+  port: 42954
+eureka:
+  instance:
+    hostname: huanan3.com
